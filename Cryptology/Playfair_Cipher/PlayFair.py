@@ -2,29 +2,135 @@ import os
 fileDir = os.path.dirname(os.path.realpath('__file__'))
 filename = os.path.join(fileDir, 'workfile')
 
+def main():
+    # GET THE USER INPUT
+    decision = str(raw_input("Would you like to encrypt or decrypt this message? Type 1 for encrypt and 2 for decrypt or 3 for exit: \n"))
 
+    # EXIT THE PROGRAM
+    if decision == str(3):
+        exit()
+    # INCORRECT INPUT
+    if ((decision != str(1)) and (decision != str(2))):
+        print "Incorrect input\n"
+        main()
+
+    # 1 KEY CONSTRAINTS: KEY CANNOT HAVE THE SAME LETTER TWICE and not J.
+    key = str(raw_input("PLEASE ENTER A KEY (no duplicate letters) \n"))
+    key = filer_unwanted_key(key)
+    # KEY TO LOWER CASE
+    key = key.lower()
+    for char in key:
+        if key.count(char) > 1:
+            print "Wrong Key try again \n"
+            main()
+    # SHOW THE NEW ALPHABET
+    print ("This is the new match in alphabet " + key)
+
+    # CREATE MATRIX
+    test_matrix = [key[(5 * i):(5 * i + 5)] for i in range(5)]
+    # SHOW MATRIX
+    print_matrix(test_matrix)
+
+    # TO WRITE THE ENCRYPTION:
+    if decision == str(1):
+        # OPEN THE FILE TO WRITE
+        f = open(filename, 'w')
+        # GET THE INPUT
+        message = str(raw_input("Please enter your plaintext message here: \n"))
+        # VERIFY THAT THE INPUT IS 3 OR MORE CHARACTERS
+        if len(message) < 3:
+            print "Message is too short type at least 3 chars \n"
+            main()
+        # FILTER THE UNWANTED CHARACTERS
+        message = filer_unwanted(message)
+        # LOWER CASE (because it didn't return lower case the function)
+        message = message.lower()
+        # SHOW THE FILTERED MESSAGE
+        print ("This is the filtered message " + message)
+
+        # TRANSFORM THE STRING TO A CHAR LIST
+        digraph = list(message)
+        print digraph
+
+        # DOUBLE CHARACTERS ADD 'x' IN BETWEEN, IF IT'S ODD ADD 'z'.
+        digraph = padding_and_doubles(digraph)
+
+        # SPLIT THE LIST INTO TWO CHARACTERS
+        new = []
+        new = make_digraph(new, digraph)
+        # SHOW THE NEW LIST WITH TWO ELEMENTS FOR EACH INDEX
+        print new
+
+        # ENCRYPT THE MESSAGE
+        cipher_text = encrypt(new, test_matrix)
+
+        # WRITE THE CIPHER TEXT TO THE FILE
+        f.write(str(cipher_text))
+        # CLOSE THE FILE
+        f.close()
+        # SHOW THE CIPHER TEXT FROM THE FILE
+        print("The encrypted message is: " + str(read_file()) + "\n")
+        # RETURN TO MAIN
+        main()
+
+    # TO DECRYPT A MESSAGE
+    elif decision == str(2):
+        # GET THE CIPHER TEXT FROM THE FILE
+        encryptedM = filer_unwanted(read_file())
+        # DISPLAY THE CIPHER TEXT
+        print encryptedM
+        # SPLIT THE LIST INTO TWO CHARACTERS
+        cipher_text = []
+        cipher_text = make_digraph(cipher_text, encryptedM)
+        # SHOW THE NEW LIST WITH TWO ELEMENTS FOR EACH INDEX
+        print cipher_text
+        # DECRYPT THE CIPHER TEXT
+        plain_text = decrypt(cipher_text, test_matrix)
+        # DISPLAY PLAIN TEXT
+        print ("The decrypted message is: %s" % ''.join(plain_text))
+        # RETURN TO MAIN
+        main()
+
+    # SOMETHING WENT WRONG
+    else:
+        print("Sorry, something went wrong \n")
+        main()
+
+
+# OPEN FILE, READ AND RETURN THE STRING/LIST
+def read_file():
+    with open(filename) as f:
+        read_data = f.readline()
+        return read_data
+
+
+# PRINT THE MATRIX IN A 5 X 5 SQUARE
 def print_matrix(matrix):
+    # FOR EVERY ROW PRINT EVERY CHARACTER
     for counter in range(5):
         print "%c %c %c %c %c" % (
             matrix[counter][0], matrix[counter][1], matrix[counter][2], matrix[counter][3], matrix[counter][4])
     print "\n"
 
 
-def getCoordinates(digraph, key_matrix):
-    coords = []
+# GET COORDINATES INSIDE THE MATRIX, METHOD TAKES TWO ARGUMENTS DIGRAPH AND MATRIX
+def get_coordinates(digraph, key_matrix):
+    # CREATE EMPTY LIST (used to append the matches)
+    coordinates = []
+    # GET THE COORDINATES OF THE CHARACTER IN DIGRAPH INSIDE MATRIX/KEY
     for char in digraph:
         for x in range(5):
             for y in range(5):
                 if key_matrix[x][y] == char:
-                    coords.append((x, y))
-    return coords
+                    coordinates.append((x, y))
+    return coordinates
 
 
 def decrypt(message, key_matrix):
     plaintext = []
     for digraph in message:
         swap = []
-        coords = getCoordinates(digraph, key_matrix)
+        coords = get_coordinates(digraph, key_matrix)
         if coords[0][0] == coords[1][0]:  # digraph lies on same x axis
             x, y = ((coords[0][0], (coords[0][1] - 1) % 5))
             swap.append((x, y))
@@ -47,7 +153,7 @@ def encrypt(message, key_matrix):
     ciphertext = []
     for d in message:
         swap = []
-        coords = getCoordinates(d, key_matrix)
+        coords = get_coordinates(d, key_matrix)
         if coords[0][0] == coords[1][0]:  # digraph lies on same x axis
             x, y = ((coords[0][0], (coords[0][1] + 1) % 5))
             swap.append((x, y))
@@ -66,7 +172,7 @@ def encrypt(message, key_matrix):
     return ciphertext
 
 
-def filerUnwanted(message):
+def filer_unwanted(message):
     # all characters to lower case
     message.lower()
     # remove all the unwanted characters
@@ -81,7 +187,7 @@ def filerUnwanted(message):
     return newmessage
 
 
-def filerUnwantedKey(key):
+def filer_unwanted_key(key):
     # All characters to lower case
     key = key.lower()
     # The alphabet does not include a J so it's 25 characters
@@ -114,107 +220,6 @@ def padding_and_doubles(digraph):
     if len(digraph) % 2 == 1:
         digraph.append("z")
     return digraph
-
-
-def main():
-    # GET THE USER INPUT
-    decision = str(raw_input("Would you like to encrypt or decrypt this message? Type 1 for encrypt and 2 for decrypt or 3 for exit: \n"))
-
-    # EXIT THE PROGRAM
-    if decision == str(3):
-        exit()
-    # INCORRECT INPUT
-    if ((decision != str(1)) and (decision != str(2))):
-        print "Incorrect input\n"
-        main()
-
-    # 1 KEY CONSTRAINTS: KEY CANNOT HAVE THE SAME LETTER TWICE and not J.
-    key = str(raw_input("PLEASE ENTER A KEY (no duplicate letters) \n"))
-    key = filerUnwantedKey(key)
-    # KEY TO LOWER CASE
-    key = key.lower()
-    for char in key:
-        if key.count(char) > 1:
-            print "Wrong Key try again \n"
-            main()
-    # SHOW THE NEW ALPHABET
-    print ("This is the new match in alphabet " + key)
-
-    # CREATE MATRIX
-    test_matrix = [key[(5 * i):(5 * i + 5)] for i in range(5)]
-    # SHOW MATRIX
-    print_matrix(test_matrix)
-
-    # TO WRITE THE ENCRYPTION:
-    if decision == str(1):
-        # OPEN THE FILE TO WRITE
-        f = open(filename, 'w')
-        # GET THE INPUT
-        message = str(raw_input("Please enter your plaintext message here: \n"))
-        # VERIFY THAT THE INPUT IS 3 OR MORE CHARACTERS
-        if len(message) < 3:
-            print "Message is too short type at least 3 chars \n"
-            main()
-        # FILTER THE UNWANTED CHARACTERS
-        message = filerUnwanted(message)
-        # LOWER CASE (because it didn't return lower case the function)
-        message = message.lower()
-        # SHOW THE FILTERED MESSAGE
-        print ("This is the filtered message " + message)
-
-        # TRANSFORM THE STRING TO A CHAR LIST
-        digraph = list(message)
-        print digraph
-
-        # DOUBLE CHARACTERS ADD 'x' IN BETWEEN, IF IT'S ODD ADD 'z'.
-        digraph = padding_and_doubles(digraph)
-
-        # SPLIT THE LIST INTO TWO CHARACTERS
-        new = []
-        new = make_digraph(new, digraph)
-        # SHOW THE NEW LIST WITH TWO ELEMENTS FOR EACH INDEX
-        print new
-
-        # ENCRYPT THE MESSAGE
-        cipher_text = encrypt(new, test_matrix)
-
-        # WRITE THE CIPHER TEXT TO THE FILE
-        f.write(str(cipher_text))
-        # CLOSE THE FILE
-        f.close()
-        # SHOW THE CIPHER TEXT FROM THE FILE
-        print("The encrypted message is: " + str(readFile()) + "\n")
-        # RETURN TO MAIN
-        main()
-
-    # TO DECRYPT A MESSAGE
-    elif decision == str(2):
-        # GET THE CIPHER TEXT FROM THE FILE
-        encryptedM = filerUnwanted(readFile())
-        # DISPLAY THE CIPHER TEXT
-        print encryptedM
-        # SPLIT THE LIST INTO TWO CHARACTERS
-        cipher_text = []
-        cipher_text = make_digraph(cipher_text, encryptedM)
-        # SHOW THE NEW LIST WITH TWO ELEMENTS FOR EACH INDEX
-        print cipher_text
-        # DECRYPT THE CIPHER TEXT
-        plain_text = decrypt(cipher_text, test_matrix)
-        # DISPLAY PLAIN TEXT
-        print ("The decrypted message is: %s" % ''.join(plain_text))
-        # RETURN TO MAIN
-        main()
-
-    # SOMETHING WENT WRONG
-    else:
-        print("Sorry, something went wrong \n")
-        main()
-
-
-def readFile():
-    with open(filename) as f:
-        read_data = f.readline()
-        return read_data
 
 
 main()
