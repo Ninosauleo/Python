@@ -118,11 +118,13 @@ def get_coordinates(digraph, key_matrix):
     # CREATE EMPTY LIST (used to append the matches)
     coordinates = []
     # GET THE COORDINATES OF THE CHARACTER IN DIGRAPH INSIDE MATRIX/KEY
+    # RUNS TWO TIMES FOR EACH ELEMENT OF DIGRAPH
     for char in digraph:
         for x in range(5):
             for y in range(5):
                 if key_matrix[x][y] == char:
                     coordinates.append((x, y))
+    print coordinates
     return coordinates
 
 
@@ -171,6 +173,7 @@ def encrypt(message, key_matrix):
             ciphertext.append(key_matrix[x][y])
     return ciphertext
 
+
 # REMOVE UNWANTED CHARACTERS FROM A MESSAGE
 def filer_unwanted(message):
     # ALL CHARACTERS TO LOWER CASE
@@ -213,6 +216,7 @@ def make_digraph(empty_list, message_list):
     [empty_list.append(message_list[i:i + 2]) for i in range(0, len(message_list), 2)]
     return empty_list
 
+
 # DOUBLE CHARACTERS ADD 'x' IN BETWEEN, IF IT'S ODD ADD 'z'.
 def padding_and_doubles(digraph):
     # ADD 'x' IN BETWEEN LIST
@@ -227,4 +231,5 @@ def padding_and_doubles(digraph):
     return digraph
 
 
+# EXECUTE MAIN
 main()
