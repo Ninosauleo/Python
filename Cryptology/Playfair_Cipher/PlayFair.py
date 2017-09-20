@@ -129,49 +129,73 @@ def get_coordinates(digraph, key_matrix):
 
 
 def decrypt(message, key_matrix):
-    plaintext = []
+    plain_text = []
     for digraph in message:
         swap = []
-        coords = get_coordinates(digraph, key_matrix)
-        if coords[0][0] == coords[1][0]:  # digraph lies on same x axis
-            x, y = ((coords[0][0], (coords[0][1] - 1) % 5))
+        coordinates = get_coordinates(digraph, key_matrix)
+        # IF DIGRAPH IS ON THE SAME X AXIS
+        if coordinates[0][0] == coordinates[1][0]:
+            x = coordinates[0][0]
+            y = (coordinates[0][1] - 1) % 5
             swap.append((x, y))
-            x, y = ((coords[1][0], (coords[1][1] - 1) % 5))
+            x = coordinates[1][0]
+            y = (coordinates[1][1] - 1) % 5
             swap.append((x, y))
-        elif coords[0][1] == coords[1][1]:  # digraph lies on same y axis
-            x, y = (((coords[0][0] - 1) % 5), coords[0][1])
+        # IF DIGRAPH IS ON SAME Y AXIS
+        elif coordinates[0][1] == coordinates[1][1]:
+            x = ((coordinates[0][0] - 1) % 5)
+            y = (coordinates[0][1])
             swap.append((x, y))
-            x, y = (((coords[1][0] - 1) % 5), coords[1][1])
+            x = ((coordinates[1][0] - 1) % 5)
+            y = coordinates[1][1]
             swap.append((x, y))
-        else:  # digraph lies on different x & y axis
-            swap.append((coords[0][0], coords[1][1]))
-            swap.append((coords[1][0], coords[0][1]))
+        # IF DIGRAPH IS ON DIFFERENT X AND Y AXIS
+        else:
+            x = coordinates[0][0]
+            y = coordinates[1][1]
+            swap.append((x, y))
+            x = coordinates[1][0]
+            y = coordinates[0][1]
+            swap.append((x, y))
+        # APPEND THE SWAPPED CHARACTERS (REVERSED) IN THE PLAIN TEXT
         for x, y in swap:
-            plaintext.append(key_matrix[x][y])
-    return plaintext
+            plain_text.append(key_matrix[x][y])
+    return plain_text
 
 
 def encrypt(message, key_matrix):
-    ciphertext = []
+    cipher_text = []
     for d in message:
         swap = []
-        coords = get_coordinates(d, key_matrix)
-        if coords[0][0] == coords[1][0]:  # digraph lies on same x axis
-            x, y = ((coords[0][0], (coords[0][1] + 1) % 5))
+        coordinates = get_coordinates(d, key_matrix)
+        # IF DIGRAPH IS ON THE SAME X AXIS
+        if coordinates[0][0] == coordinates[1][0]:
+            x = coordinates[0][0]
+            y = (coordinates[0][1] +1) % 5
             swap.append((x, y))
-            x, y = ((coords[1][0], (coords[1][1] + 1) % 5))
+            x = coordinates[1][0]
+            y = (coordinates[1][1] + 1) % 5
             swap.append((x, y))
-        elif coords[0][1] == coords[1][1]:  # digraph lies on same y axis
-            x, y = (((coords[0][0] + 1) % 5), coords[0][1])
+        # IF DIGRAPH IS ON SAME Y AXIS
+        elif coordinates[0][1] == coordinates[1][1]:
+            x = ((coordinates[0][0] + 1) % 5)
+            y = (coordinates[0][1])
             swap.append((x, y))
-            x, y = (((coords[1][0] + 1) % 5), coords[1][1])
+            x = ((coordinates[1][0] + 1) % 5)
+            y = coordinates[1][1]
             swap.append((x, y))
+        # IF DIGRAPH IS ON DIFFERENT X AND Y AXIS
         else:  # digraph lies on different x & y axis
-            swap.append((coords[0][0], coords[1][1]))
-            swap.append((coords[1][0], coords[0][1]))
+            x = coordinates[0][0]
+            y = coordinates[1][1]
+            swap.append((x, y))
+            x = coordinates[1][0]
+            y = coordinates[0][1]
+            swap.append((x, y))
+        # APPEND THE SWAPPED CHARACTERS IN THE CIPHER TEXT
         for x, y in swap:
-            ciphertext.append(key_matrix[x][y])
-    return ciphertext
+            cipher_text.append(key_matrix[x][y])
+    return cipher_text
 
 
 # REMOVE UNWANTED CHARACTERS FROM A MESSAGE
