@@ -76,12 +76,12 @@ def main():
     # TO DECRYPT A MESSAGE
     elif decision == str(2):
         # GET THE CIPHER TEXT FROM THE FILE
-        encryptedM = filer_unwanted(read_file())
+        encrypted_m = filer_unwanted(read_file())
         # DISPLAY THE CIPHER TEXT
-        print encryptedM
+        print encrypted_m
         # SPLIT THE LIST INTO TWO CHARACTERS
         cipher_text = []
-        cipher_text = make_digraph(cipher_text, encryptedM)
+        cipher_text = make_digraph(cipher_text, encrypted_m)
         # SHOW THE NEW LIST WITH TWO ELEMENTS FOR EACH INDEX
         print cipher_text
         # DECRYPT THE CIPHER TEXT
@@ -171,52 +171,57 @@ def encrypt(message, key_matrix):
             ciphertext.append(key_matrix[x][y])
     return ciphertext
 
-
+# REMOVE UNWANTED CHARACTERS FROM A MESSAGE
 def filer_unwanted(message):
-    # all characters to lower case
+    # ALL CHARACTERS TO LOWER CASE
     message.lower()
-    # remove all the unwanted characters
+    # LIST OF UNWANTED CHARACTERS
     unwanted = ("!,.?#!*&@$% ^&*()<>{}[]\/'1234567890")
-    # create a message with the previous and one replace j with i
+    # FILTER THE MESSAGE, REPLACE 'j' WITH 'i'
     newmessage = message
     for char in message:
         if any(char == unwantedChar for unwantedChar in unwanted):
             newmessage = newmessage.replace(char, "")
         if any('j' == unwantedChar for unwantedChar in newmessage):
             newmessage = newmessage.replace(char, "i")
+    # RETURN THE FILTERED MESSAGE
     return newmessage
 
 
+# REMOVE UNWANTED CHARACTERS FROM A KEY
 def filer_unwanted_key(key):
-    # All characters to lower case
+    # ALL CHARACTERS TO LOWER CASE
     key = key.lower()
-    # The alphabet does not include a J so it's 25 characters
+    # ALPHABET WITH 25 CHARACTERS ('j' is not included)
     alphabet = "abcdefghiklmnopqrstuvwxyz"
-    #filter all bad characters
+    # LIST OF UNWANTED CHARACTERS
     unwanted = ("!,.?#!*&@$% ^&*()<>{}Jj[]\/'1234567890")
     tmp = alphabet
+    # FILTER THE MESSAGE, REMOVE 'j' IF IT EXISTS
     for char in key:
         if any(char == alphabetWord for alphabetWord in alphabet):
             tmp = tmp.replace(char, "")
         if any(char == unwantedChar for unwantedChar in unwanted):
             key = key.replace(char, "")
     key = key + tmp
+    # RETURN THE KEY FOR THE MATRIX
     return key
 
 
-def make_digraph(list, messageList):
-    [list.append(messageList[i:i + 2]) for i in range(0, len(messageList), 2)]
-    return list
+# SPLIT THE LIST INTO TWO CHARACTERS
+def make_digraph(empty_list, message_list):
+    [empty_list.append(message_list[i:i + 2]) for i in range(0, len(message_list), 2)]
+    return empty_list
 
-
+# DOUBLE CHARACTERS ADD 'x' IN BETWEEN, IF IT'S ODD ADD 'z'.
 def padding_and_doubles(digraph):
-    # divide the string into strings of two chars
+    # ADD 'x' IN BETWEEN LIST
     i = 0
     for e in range(len(digraph) / 2):
         if digraph[i] == digraph[i + 1]:
             digraph.insert(i + 1, 'x')
         i = i + 2
-    # If it is odd digit, add an "z" for padding
+    # ADD 'z' IF IT'S ODD NUMBER
     if len(digraph) % 2 == 1:
         digraph.append("z")
     return digraph
