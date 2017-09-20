@@ -2,6 +2,11 @@ import os
 fileDir = os.path.dirname(os.path.realpath('__file__'))
 filename = os.path.join(fileDir, 'workfile')
 
+# NAME: Antonino Sauleo
+# ASSIGNMENT 1
+# SECURE PROGRAMMING
+
+
 def main():
     # GET THE USER INPUT
     decision = str(raw_input("Would you like to encrypt or decrypt this message? Type 1 for encrypt and 2 for decrypt or 3 for exit: \n"))
@@ -106,11 +111,9 @@ def read_file():
 
 # PRINT THE MATRIX IN A 5 X 5 SQUARE
 def print_matrix(matrix):
-    # FOR EVERY ROW PRINT EVERY CHARACTER
-    for counter in range(5):
-        print "%c %c %c %c %c" % (
-            matrix[counter][0], matrix[counter][1], matrix[counter][2], matrix[counter][3], matrix[counter][4])
-    print "\n"
+    print " ", " ".join([str(character) for character in xrange(len(matrix))])
+    for enumerated, character in enumerate(matrix):
+        print enumerated, " ".join(character)
 
 
 # GET COORDINATES INSIDE THE MATRIX, METHOD TAKES TWO ARGUMENTS DIGRAPH AND MATRIX
@@ -171,7 +174,7 @@ def encrypt(message, key_matrix):
         # IF DIGRAPH IS ON THE SAME X AXIS
         if coordinates[0][0] == coordinates[1][0]:
             x = coordinates[0][0]
-            y = (coordinates[0][1] +1) % 5
+            y = (coordinates[0][1] + 1) % 5
             swap.append((x, y))
             x = coordinates[1][0]
             y = (coordinates[1][1] + 1) % 5
