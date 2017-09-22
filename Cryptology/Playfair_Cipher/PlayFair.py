@@ -1,6 +1,6 @@
 import os
 fileDir = os.path.dirname(os.path.realpath('__file__'))
-filename = os.path.join(fileDir, 'workfile')
+filename = os.path.join(fileDir, 'message')
 
 # NAME: Antonino Sauleo
 # ASSIGNMENT 1
@@ -127,7 +127,7 @@ def get_coordinates(digraph, key_matrix):
             for y in range(5):
                 if key_matrix[x][y] == char:
                     coordinates.append((x, y))
-    print coordinates
+    #print coordinates
     return coordinates
 
 
@@ -207,12 +207,13 @@ def filer_unwanted(message):
     message.lower()
     # LIST OF UNWANTED CHARACTERS
     unwanted = ("!,.?#!*&@$% ^&*()<>{}[]\/'1234567890")
+    unwated_j = ("jJ")
     # FILTER THE MESSAGE, REPLACE 'j' WITH 'i'
     newmessage = message
     for char in message:
         if any(char == unwantedChar for unwantedChar in unwanted):
             newmessage = newmessage.replace(char, "")
-        if any('j' == unwantedChar for unwantedChar in newmessage):
+        if any(char == unwated for unwated in unwated_j):
             newmessage = newmessage.replace(char, "i")
     # RETURN THE FILTERED MESSAGE
     return newmessage

@@ -1,0 +1,15 @@
+Manual:
+
+Enter 1 to encrypt a message, 2 to decrypt a message or 3 to exit. Any other input will return you to the 3 options.
+
+To encrypt a message you need to write a key. After writing the key, the user will be asked to write a message.
+The message will replace all 'j' or 'J' to i. All characters to lower case. It will add an 'x' between double characters
+and if the length of the word is an odd number it will append a 'z' in the end of the word. For instance: message "tiii"
+will be displayed as ti ix iz
+
+The key needs to be less than 25 words and it needs to be characters inside the english alphabet without 'j' or 'J'.
+If the user types 'j' it will get deleted, if the user types any unwated character from the unwanted character list
+the the character will get deleted such as "! H r#pI" will be transformed into "hrpi" or "jipo" will be "ipo".
+
+To decrypt a message the user needs to type 2. Then it will get asked to write a key again. If the key is the same as
+before it will display the message, otherwise, it will display a wrong message.
