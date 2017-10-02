@@ -7,9 +7,19 @@ from tkFileDialog import askopenfilename
 import ast
 import os
 import tkMessageBox
+import Tkinter
+import tkSimpleDialog
+import tkMessageBox
 
 
 fileDir = os.path.dirname(os.path.realpath('__file__'))
+
+
+def ask_user(prompt, command):
+    root = Tkinter.Tk()
+    var = tkSimpleDialog.askstring(str(prompt), str(command))
+    #print var
+    return var
 
 
 def pop_window(title, message):
@@ -72,7 +82,8 @@ def main():
 
         f = open(privateKeyname, 'r')
         # passphrase is password
-        priv_key_obj = RSA.importKey(f.read(), passphrase='123')
+        password = ask_user("Type Key password", "Please type your password: ")
+        priv_key_obj = RSA.importKey(f.read(), passphrase=password)
 
         # DECRYPT THE MESSAGE
         decrypted = priv_key_obj.decrypt(ast.literal_eval(str(ecrypted_message)))

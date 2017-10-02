@@ -74,7 +74,8 @@ def main():
         # BINARY PUBLIC KEY
         privateKeyname = ask_user("TYPE PRIVATEKEYNAME.PEM", "Please type the keyname + .pem 'myprivatekey.pem' and press 'Enter': ")
         f = open(privateKeyname, 'w')
-        private_key = key.exportKey('PEM', '123', pkcs=1)
+        password = ask_user("Type Key password", "Please create your password: ")
+        private_key = key.exportKey('PEM', password, pkcs=1)
         f.writelines(private_key)
         f.close()
 
