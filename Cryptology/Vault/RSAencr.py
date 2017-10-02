@@ -127,15 +127,25 @@ def main():
     print "Hash"
     print signature
 
+    f = open('secret.txt', 'r')
+    m = read_file_all("secret.txt")
+    # REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
+    m = map(lambda s: s.strip(), m)
+    print m[0]
+    print m[1]
+    f.close()
+
     # APPEND SIGNATURE TO SECRET FILE IN FORMAT FILE_NAME : SIGNATURE
     f = open('secret.txt', 'w')
     file_name = filename
-    secret_list = []
-    secret_list.append(str(file_name))
-    secret_list.append(str(signature))
+    # secret_list = []
+    # secret_list.append(str(file_name))
+    # secret_list.append(str(signature))
+    m.append(str(file_name))
+    m.append(str(signature))
     # ASK IF FILE_NAME IS THE CIPHER TEXT? OR IF YOU NEED TO ADD ALL THE PATH NAME
     # ALSO ASK IF WE NEED TO RSA AND HASH TOGETHER OR SEPARATE
-    for items in secret_list:
+    for items in m:
         f.writelines("%s\n" % items)
     f.close()
 
