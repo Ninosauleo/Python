@@ -29,6 +29,7 @@ def pad(s):
 
 
 def decode_aes(c, e):
+    e = str(e)
     return c.decrypt(base64.b64decode(e)).rstrip(PADDING)
 
 
@@ -41,7 +42,37 @@ cipher = AES.new(open(key, 'r').readline())
 pop_window("SELECT FILE", "Select a Message.txt from your computer to decrypt")
 cmsg = select_file()
 
+m = open(cmsg, 'r').readlines()
+# REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
+m = map(lambda s: s.strip(), m)
+
+print m
+message = ""
+
+for items in m:
+    message +=  "%s\n" % decode_aes(cipher, str(items))
+    print ("%s\n" % items)
+
+
 
 # decode the encoded string
-decoded = decode_aes(cipher, open(cmsg, 'r').readline())
-print 'Decrypted string:', decoded
+#decoded = decode_aes(cipher, str(open(cmsg, 'r').readlines()))
+print 'Decrypted string:', message
+
+
+
+# REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
+# m = map(lambda s: s.strip(), decoded)
+# print m[0]
+# print m[1]
+# print m[2]
+
+
+
+
+
+# # ASK THE USER TO INPUT THE NAME OF THE NEW CIPHER TEXT
+# f = open(cmsg, 'w')
+# f.flush()
+# f.writelines(decoded)
+# f.close()

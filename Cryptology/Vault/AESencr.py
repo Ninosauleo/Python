@@ -63,13 +63,24 @@ def main():
 
         pop_window("SELECT FILE", "Select a Message.txt from your computer to encrypt")
         msg = select_file()
-        encoded = encode_aes(cipher, open(msg, 'r').readline())
-        print 'Encrypted string:', encoded
+        m = open(msg, 'r').readlines()
+        # REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
+        m = map(lambda s: s.strip(), m)
+
+        print m
+        message = ""
+        for items in m:
+            message += "%s\n" % encode_aes(cipher, str(items))
+            print ("%s\n" % items)
+
+        encoded = encode_aes(cipher, str(m))
+
+        print 'Encrypted string:', message
 
         # ASK THE USER TO INPUT THE NAME OF THE NEW CIPHER TEXT
         filename = ask_user("TYPE YOUR CIPHERTEXT NAME", "type encrypted message 'Ciphertext.txt' and press 'OK':")
         f = open(filename, 'w')
-        public_key = encoded
+        public_key = message
         f.writelines(public_key)
         f.close()
     elif userInput == str(2):
