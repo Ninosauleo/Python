@@ -39,20 +39,21 @@ key = select_file()
 
 cipher = AES.new(open(key, 'r').readline())
 
+# OPEN FILE TO DECRYPT
 pop_window("SELECT FILE", "Select a Message.txt from your computer to decrypt")
 cmsg = select_file()
-
 m = open(cmsg, 'r').readlines()
 # REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
 m = map(lambda s: s.strip(), m)
-
 print m
+
+# WRITE DECRYPTED MESSAGE back into file
 message = ""
-
+f = open(cmsg, 'w')
 for items in m:
-    message +=  "%s\n" % decode_aes(cipher, str(items))
-    print ("%s\n" % items)
-
+    message += "%s\n" % decode_aes(cipher, str(items))
+f.writelines(message)
+f.close()
 
 
 # decode the encoded string
@@ -61,18 +62,3 @@ print 'Decrypted string:', message
 
 
 
-# REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
-# m = map(lambda s: s.strip(), decoded)
-# print m[0]
-# print m[1]
-# print m[2]
-
-
-
-
-
-# # ASK THE USER TO INPUT THE NAME OF THE NEW CIPHER TEXT
-# f = open(cmsg, 'w')
-# f.flush()
-# f.writelines(decoded)
-# f.close()
