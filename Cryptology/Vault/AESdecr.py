@@ -1,6 +1,9 @@
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 import tkMessageBox
+import tkSimpleDialog
+import tkMessageBox
+import Tkinter
 from Crypto.Cipher import AES
 import base64
 
@@ -12,6 +15,13 @@ BLOCK_SIZE = 16
 # you encrypt must be a multiple of BLOCK_SIZE in length.  This character is
 # used to ensure that your value is always a multiple of BLOCK_SIZE
 PADDING = '{'
+
+
+def ask_user(prompt, command):
+    root = Tkinter.Tk()
+    var = tkSimpleDialog.askstring(str(prompt), str(command))
+    #print var
+    return var
 
 
 def pop_window(title, message):
@@ -46,14 +56,25 @@ m = open(cmsg, 'r').readlines()
 # REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
 m = map(lambda s: s.strip(), m)
 print m
-
-# WRITE DECRYPTED MESSAGE back into file
 message = ""
-f = open(cmsg, 'w')
-for items in m:
-    message += "%s\n" % decode_aes(cipher, str(items))
-f.writelines(message)
-f.close()
+
+deleteFile = ask_user("DO YOU WANT TO OVERRIDE THE ENCRYPTED FILE?", "TYPE 1 TO OVERRIDE OR TYPE 2 TO CREATE A NEW ONE")
+if deleteFile == str(1):
+    # WRITE DECRYPTED MESSAGE back into file
+    f = open(cmsg, 'w')
+    for items in m:
+        message += "%s\n" % decode_aes(cipher, str(items))
+    f.writelines(message)
+    f.close()
+elif deleteFile == str(2):
+    filename = ask_user("TYPE YOUR DECRYPTED FILE NAME", "type message + format (.pdf .txt, etc...)\n'Ciphertext.txt' and press 'OK':")
+    f = open(filename, 'w')
+    for items in m:
+        message += "%s\n" % decode_aes(cipher, str(items))
+    f.writelines(message)
+    f.close()
+
+
 
 
 # decode the encoded string

@@ -72,17 +72,27 @@ def main():
         for items in m:
             message += "%s\n" % encode_aes(cipher, str(items))
             print ("%s\n" % items)
+        deleteFile = ask_user("DO YOU WANT TO OVERRIDE THE ENCRYPTED FILE?", "TYPE 1 TO OVERRIDE OR TYPE 2 TO CREATE A NEW ONE")
 
-        encoded = encode_aes(cipher, str(m))
-
+        # FOR DEBUGGING
         print 'Encrypted string:', message
 
-        # ASK THE USER TO INPUT THE NAME OF THE NEW CIPHER TEXT
-        filename = ask_user("TYPE YOUR CIPHERTEXT NAME", "type encrypted message 'Ciphertext.txt' and press 'OK':")
-        f = open(filename, 'w')
-        public_key = message
-        f.writelines(public_key)
-        f.close()
+        if deleteFile == str(1):
+            f = open(msg, 'w')
+            public_key = message
+            f.writelines(public_key)
+            f.close()
+        elif deleteFile == str(2):
+            # ASK THE USER TO INPUT THE NAME OF THE NEW CIPHER TEXT
+            filename = ask_user("TYPE YOUR CIPHERTEXT NAME", "type encrypted message 'Ciphertext.txt' and press 'OK':")
+            f = open(filename, 'w')
+            public_key = message
+            f.writelines(public_key)
+            f.close()
+        else:
+            pop_window("WRONG INPUT!!!", "DO IT AGAIN")
+            exit(4)
+
     elif userInput == str(2):
         execfile("AESdecr.py")
     else:
