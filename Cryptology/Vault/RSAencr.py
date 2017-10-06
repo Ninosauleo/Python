@@ -1,12 +1,7 @@
 from Crypto.Hash import SHA512
 from Crypto.PublicKey import RSA
 from Crypto import Random
-from collections import Counter
-from Tkinter import Tk
-from tkFileDialog import askopenfilename
-import ast
 import os
-import tkMessageBox
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 import Tkinter
