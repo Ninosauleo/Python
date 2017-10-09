@@ -9,8 +9,6 @@ from Crypto import Random
 from Crypto.Hash import SHA512
 
 
-
-
 BLOCK_SIZE = 16
 
 
@@ -23,19 +21,23 @@ def hash_sha512(message):
     signature = h.hexdigest()
     return signature
 
+
 def pop_window(title, message):
     tkMessageBox.showinfo(title, message)
+
 
 def select_file():
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     return filename
 
+
 def ask_user(prompt, command):
     root = Tkinter.Tk()
     var = tkSimpleDialog.askstring(str(prompt), str(command))
     #print var
     return var
+
 
 def pad(s):
     return s + b"\0" * (AES.block_size - len(s) % AES.block_size)
@@ -47,6 +49,7 @@ def decrypt(ciphertext, key):
     plaintext = cipher.decrypt(ciphertext[AES.block_size:])
     return plaintext.rstrip(b"\0")
 
+
 def decrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
         cipher_text = fo.read()
@@ -54,11 +57,13 @@ def decrypt_file(file_name, key):
     with open(file_name, 'wb') as fo:
         fo.write(dec)
 
+
 def encrypt(message, key, key_size=256):
     message = pad(message)
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(key, AES.MODE_CBC, iv)
     return iv + cipher.encrypt(message)
+
 
 def encrypt_file(file_name, key):
     with open(file_name, 'rb') as fo:
