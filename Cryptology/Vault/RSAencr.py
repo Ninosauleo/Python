@@ -53,7 +53,7 @@ def select_file():
 def hash_sha512(message):
     # SHA512 HASHING OF THE INPUT FILE
     h = SHA512.new()
-    h.update(str(message))
+    h.update(message)
     # digest() Return the binary (non-printable) digest of the message that has been hashed so far.
     # hexdigest() Return the printable digest of the message that has been hashed so far.
     signature = h.hexdigest()
@@ -81,7 +81,6 @@ def main():
         file.writelines(public_key)
         file.close()
     elif decision == str(2):
-        print "nothing to do here yet"
         pop_window("SELECT PUBLIC KEY", "puKey.PEM from your computer")
         publicKeyName = select_file()
         pop_window("SELECT PRIVATE KEY", "prKey.PEM from your computer")
@@ -91,49 +90,36 @@ def main():
 
     # READ INPUT FROM FILE
     pop_window("SELECT FILE", "FILE.TXT from your computer")
-    filename = select_file()
-    print(filename)
-    file = open(filename, 'r')
-    send_message = file.readline()
+    file_name = select_file()
+
+    # HASH THE FILE
+    filename = open(file_name, 'r').read()
+    hashing = hash_sha512(filename)
+    #print hashing
 
 
     # IMPORT KEY / depends if it's the auto/generated or the selected
     # ask to select a public key to import and after selecting you encrypt
     f = open(publicKeyName, 'r')
     pubKeyObj = RSA.importKey(f.read())
-    print "this is pubKey obj: " + str(pubKeyObj)
+    #print "this is pubKey obj: " + str(pubKeyObj)
     #publickey = key.publickey()  # pub key export for exchange
 
     # ENCRYPT THE MESSAGE FROM FILE
-    encrypted = pubKeyObj.encrypt(send_message, 32)
-    f.close()
-    # DISPLAY ENCRYPTED MESSAGE
-    print 'encrypted message:', encrypted
-
-    # OPEN FILE TO STORE SECRET MESSAGE
-    cipher_text = ask_user("TYPE CIPHER_TEXT.TXT", "Please type the cipher_text (ciphertextname +.txt):  ")
-    f = open(cipher_text, 'w')
-    # WRITE THE CIPHER TEXT IN THE MESSAGE
-    f.write(str(encrypted))
-    # CLOSE FILE
+    signature = pubKeyObj.encrypt(str(hashing), 32)
     f.close()
 
-    # HASH FUNCTION / HASH PRIVATE KEY
-    signature = hash_sha512(encrypted)
-    print "Hash"
-    print signature
-
+    # APPEND THE SIGNATURE TO THE SECRET
     f = open('secret.txt', 'r')
     m = read_file_all("secret.txt")
     # REMOVE THE \n FROM ALL ELEMENTS IN THE LIST
     m = map(lambda s: s.strip(), m)
-    print m[0]
-    print m[1]
+    #print m[0]
+    #print m[1]
     f.close()
 
     # APPEND SIGNATURE TO SECRET FILE IN FORMAT FILE_NAME : SIGNATURE
     f = open('secret.txt', 'w')
-    file_name = filename
     # secret_list = []
     # secret_list.append(str(file_name))
     # secret_list.append(str(signature))

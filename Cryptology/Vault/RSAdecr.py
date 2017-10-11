@@ -35,7 +35,7 @@ def select_file():
 def hash_sha512(message):
     # SHA512 HASHING OF THE INPUT FILE
     h = SHA512.new()
-    h.update(str(message))
+    h.update(message)
     # digest() Return the binary (non-printable) digest of the message that has been hashed so far.
     # hexdigest() Return the printable digest of the message that has been hashed so far.
     signature = h.hexdigest()
@@ -58,51 +58,41 @@ def main():
 
     pop_window("SELECT FILE FROM COMPUTER", "Please Select a file to decrypt")
     secret_file = select_file()
+    # HASH THE FILE
+    filename = open(secret_file, 'r').read()
+    hashing = hash_sha512(filename)
 
-    # it should open the private key you selected and compare with the hash of the secret
-    f = open(secret_file, 'r')
-    signature2 = hash_sha512(f.read())
+    pop_window("SELECT PUBLIC KEY", "puKey.PEM from your computer")
+    publicKeyName = select_file()
+
+    f = open(publicKeyName, 'r')
+    pubKeyObj = RSA.importKey(f.read())
+    # ENCRYPT THE MESSAGE FROM FILE
+    n = []
+    signature2 = pubKeyObj.encrypt(str(hashing), 32)
+    n.append("%s\n" % str(signature2))
+    n = map(lambda s: s.strip(), n)
+
+    print "This is signature 2: "
+    print n[0]
+
     f.close()
+
 
    # LOOP THROUGH ALL OF THE LIST
     index = 0
     signatureFound = False
     while(index < (len(m) -1)):
-        print "index at : " + str(index)
-        print m[index]
         index += 1
-        print "plus one is " + str(index)
-        print m[index]
-
-        if Counter(signature2) == Counter(m[index]):
-            print "VERIFIED FILE"
-            # pop_window("SELECT CIPHERTEXT", "CIPHERTEXT.TXT from your computer")
-            # filename = select_file()
-            # print(filename)
-            file = open(secret_file, 'r')
-            ecrypted_message = file.readline()
-            file.close()
-
-            pop_window("SELECT PRIVATE KEY", "prKey.PEM from your computer")
-            privateKeyname = select_file()
-
-            f = open(privateKeyname, 'r')
-            # passphrase is password
-            password = ask_user("Type Key password", "Please type your password: ")
-            priv_key_obj = RSA.importKey(f.read(), passphrase=password)
-
-            # DECRYPT THE MESSAGE
-            decrypted = priv_key_obj.decrypt(ast.literal_eval(str(ecrypted_message)))
-            f.close()
-            # DISPLAY THE DECRYPTED MESSAGE
-            print 'DECRYPTED', decrypted
+        if Counter(n[0]) == Counter(m[index]):
             signatureFound = True
-            # stop the loop
+            print "VERIFIED FILE"
+            pop_window("VERIFIED FILE", "The file is verified, it has not changed!")
             break
-        # if the signature is not in the secret increment by one
-        index += 1
+
     if signatureFound == False:
-        print "Sorry wrong keys"
+        pop_window("FILE not verified", "SORRY this file is not verified")
+        print secret_file
 
 
 main()

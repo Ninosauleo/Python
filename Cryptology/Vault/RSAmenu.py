@@ -78,7 +78,7 @@ def hash_sha512(message):
 
 
 def main():
-    decision = ask_user("DECIDE", "AES: type 1 to encrypt or type 2 to decrypt")
+    decision = ask_user("DECIDE", "RSA: type 1 to add file or type 2 to verify")
 
     if decision == str(1):
         execfile("RSAencr.py")
